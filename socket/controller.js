@@ -1,14 +1,24 @@
 const { Socket } = require('socket.io');
 const { checkJWT } = require('../helpers/jwt-generator');
+const { ChatMessages } = require('../models');
 
-const socketController = async (socket = new Socket()) => {
-    //console.log(socket);
-    const user =  await checkJWT(socket.handshake.headers['x-token']);
-    if(!user){
+const chat = new ChatMessages()
+
+const socketController = async (socket = new Socket(), io) => {
+    const user = await checkJWT(socket.handshake.headers['x-token']);
+    if (!user) {
         return socket.disconnect();
     }
 
-    console.log('Usuario conectado:' + user.name);
+    chat.connectUser(user);
+    io.emit('active-users', chat.usersArr);
+
+
+    socket.on('disconnect', () => {
+        chat.disconnectUser(user.id)
+        io.emit('active-users', chat.usersArr);
+    });
+
 }
 
 module.exports = socketController;

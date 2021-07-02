@@ -1,7 +1,6 @@
 const { response, request } = require('express');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
-const { validateFields } = require('../middlewares/fields-validation');
 const { generateJWT } = require('../helpers/jwt-generator');
 const { verifyGoogle } = require('../helpers/google-verify');
 
@@ -59,7 +58,7 @@ const googleSignIn = async (req, res = response) => {
       await user.save();
     }
 
-    if (!user.active){
+    if (!user.active) {
       return res.status(401).json({
         msg: 'Hable con el administrador'
       })
@@ -67,19 +66,28 @@ const googleSignIn = async (req, res = response) => {
 
     const token = await generateJWT(user.id);
 
-      res.json({
-        msg: 'Google',
-        user,
-        token
-      })
+    res.json({
+      msg: 'Google',
+      user,
+      token
+    })
   } catch (error) {
     res.status(400).json({ msg: 'Token de Google no reconocido' })
   }
 
+}
+
+const renewToken = async (req, res = response) => {
+
+  const { user } = req;
+  const token = await generateJWT(user.id);
+
+  res.json({ user, token })
 
 }
 
 module.exports = {
   login,
-  googleSignIn
+  googleSignIn,
+  renewToken
 }

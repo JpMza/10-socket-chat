@@ -36,6 +36,38 @@ const main = async () => {
     await validateJwt();
 }
 
+txtMsg.addEventListener('keyup', ({ keyCode }) => {
+    const message = txtMsg.value;
+    const uid = txtUid.value;
+    console.log(keyCode, ' ', message.length);
+    if (keyCode !== 13) {
+        return;
+    } else if (message.length === 0) {
+        return
+    };
+
+    socket.emit('send-msg', {  message, uid  });
+    txtMsg.value = '';
+})
+
+const drawUsers = (users = []) => {
+
+    let usersHtml = '';
+    users.forEach(({ name, uid }) => {
+
+        usersHtml += `
+            <li>
+                <p>
+                    <h5 class="text-success">${name}</h5>
+                    <span class="fs-6 text-muted">${uid}</span>
+                </p>
+            </li>
+        `
+    })
+
+    ulUsers.innerHTML = usersHtml;
+}
+
 const connectSocket = async () => {
 
     socket = io({
@@ -50,17 +82,17 @@ const connectSocket = async () => {
         console.log('disconnect');
     })
 
-    socket.on('recive-msg',() => {
-
-    })
-
-    socket.on('active-users', (payload) => {
+    socket.on('recive-msg', (payload) => {
         console.log(payload);
     })
+
+    socket.on('active-users', drawUsers)
 
     socket.on('private-msg', () => {
 
     })
+
+    
 }
 
 main();

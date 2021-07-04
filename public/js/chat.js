@@ -8,7 +8,7 @@ const txtMsg = document.querySelector('#txtMsg');
 const ulUsers = document.querySelector('#ulUsers');
 const ulMessages = document.querySelector('#ulMessages');
 const btnLogout = document.querySelector('#btnLogout');
-
+const ulPrivateMsg = document.querySelector('#ulPrivateMsg');
 
 const url = window.location.hostname.includes('localhost')
     ? 'http://localhost:8080/api/auth/'
@@ -89,9 +89,7 @@ const drawMessages = (messages = []) => {
 
 const drawPrivate = (msgInfo = {}) => {
 
-    let messagesHtml = '';
-
-    messagesHtml += `
+    let messagesHtml = `
             <li>
                 <p>
                     <span class="text-danger">De: ${msgInfo.from}: </span>
@@ -100,7 +98,7 @@ const drawPrivate = (msgInfo = {}) => {
             </li>`
 
 
-    ulMessages.innerHTML = messagesHtml;
+    ulPrivateMsg.innerHTML = messagesHtml;
 }
 
 const connectSocket = async () => {

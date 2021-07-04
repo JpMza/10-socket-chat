@@ -11,8 +11,11 @@ const socketController = async (socket = new Socket(), io) => {
     }
 
     chat.connectUser(user);
+    io.emit('recive-msg', chat.last10)
     io.emit('active-users', chat.usersArr);
 
+    //Connect to a special room
+    socket.join(user.id); //connected to global, socket.id, user.id
 
     socket.on('disconnect', () => {
         chat.disconnectUser(user.id)
@@ -20,8 +23,13 @@ const socketController = async (socket = new Socket(), io) => {
     });
 
     socket.on('send-msg', ({ message, uid }) => {
-        chat.sendMessage(user.uid, user.name, message);
-        io.emit('recive-msg', chat.last10);
+
+        if (uid) {
+            socket.to(uid).emit('private-msg', { from: user.name, message })
+        } else {
+            chat.sendMessage(user.uid, user.name, message);
+            io.emit('recive-msg', chat.last10);
+        }
     })
 }
 

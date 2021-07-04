@@ -46,7 +46,7 @@ txtMsg.addEventListener('keyup', ({ keyCode }) => {
         return
     };
 
-    socket.emit('send-msg', {  message, uid  });
+    socket.emit('send-msg', { message, uid });
     txtMsg.value = '';
 })
 
@@ -68,6 +68,41 @@ const drawUsers = (users = []) => {
     ulUsers.innerHTML = usersHtml;
 }
 
+const drawMessages = (messages = []) => {
+
+    let messagesHtml = '';
+
+    messages.forEach(({ name, msg }) => {
+
+        messagesHtml += `
+            <li>
+                <p>
+                    <span class="text-primary">${name}: </span>
+                    <span>${msg}</span>
+                </p>
+            </li>
+        `
+    })
+
+    ulMessages.innerHTML = messagesHtml;
+}
+
+const drawPrivate = (msgInfo = {}) => {
+
+    let messagesHtml = '';
+
+    messagesHtml += `
+            <li>
+                <p>
+                    <span class="text-danger">De: ${msgInfo.from}: </span>
+                    <span>${msgInfo.message}</span>
+                </p>
+            </li>`
+
+
+    ulMessages.innerHTML = messagesHtml;
+}
+
 const connectSocket = async () => {
 
     socket = io({
@@ -83,16 +118,16 @@ const connectSocket = async () => {
     })
 
     socket.on('recive-msg', (payload) => {
-        console.log(payload);
+        drawMessages(payload)
     })
 
     socket.on('active-users', drawUsers)
 
-    socket.on('private-msg', () => {
-
+    socket.on('private-msg', (payload) => {
+        drawPrivate(payload);
     })
 
-    
+
 }
 
 main();

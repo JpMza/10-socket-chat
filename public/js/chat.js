@@ -39,7 +39,6 @@ const main = async () => {
 txtMsg.addEventListener('keyup', ({ keyCode }) => {
     const message = txtMsg.value;
     const uid = txtUid.value;
-    console.log(keyCode, ' ', message.length);
     if (keyCode !== 13) {
         return;
     } else if (message.length === 0) {

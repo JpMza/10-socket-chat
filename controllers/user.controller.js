@@ -41,8 +41,8 @@ const usersPut = async (req, res) => {
     }
 
     const user = await User.findByIdAndUpdate(id, rest);
-    
-    res.json({user});
+
+    res.json({ user });
 }
 
 const usersDelete = async (req, res) => {

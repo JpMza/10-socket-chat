@@ -41,7 +41,6 @@ function onSignIn(googleUser) {
     })
         .then(resp => resp.json())
         .then(({ token }) => {
-            console.log(token);
             localStorage.setItem('token', token);
             window.location = 'chat.html';
         })
